@@ -1,11 +1,19 @@
 import Image from "next/image";
 import PublishedAt from "./publishedAt";
 
+type Asset = {
+	browser_download_url: string;
+	name: string;
+};
+
 export default async function Home() {
 	const data = await fetch(
-		"https://api.github.com/repos/Streamware/Mirrors/releases?per_page=1",
-		{ cache: "force-cache" }
+		"https://api.github.com/repos/Streamware/Mirrors/releases?per_page=1"
 	).then((res) => res.json());
+
+	const getReleaseAsset = data[0].assets.find((asset: Asset) =>
+		asset.name.includes("app-release.apk")
+	);
 
 	return (
 		<main className="flex min-h-screen flex-col items-center sm:p-24 p-10">
@@ -22,7 +30,7 @@ export default async function Home() {
 			<div className="flex-col items-center content-center justify-center my-5">
 				<a
 					className="block bg-[#171717] text-gray-100 px-4 py-2 rounded-lg text-sm mb-2"
-					href={data[0].assets[0].browser_download_url}
+					href={getReleaseAsset.browser_download_url}
 					download
 				>
 					Download APK
